@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单控件-2015-12-7接外包单子</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="container" class="my-module">
+    <p class="module-head">
+        <label for="r1">
+            <input name="datatadio" id="r1" type="radio" value="" checked="checked" onclick="" />配置HiveSql
+        </label>
+        <label for="r2" class="red">
+            <input name="datatadio" id="r2" type="radio" value=""  onclick="" />自定义HiveSql
+        </label>
+    </p>
+</div>
+</body>
+<script src="jquery-1.8.2.min.js"></script>
+<script>
+    (function($){
+        $.Table = function(){
+            this.defult = {
+                dataSource:['1998','1999','2000'],   //数据源
+                leftParentheses:['(','{','(('],    //左括号
+                rightParentheses:[')','}','))'],    //右括号
+                logic:['and','or'],   //逻辑符号
+                compareSymble:['=','>=','>','<','<='],    //比较符
+                ziduan:['1998','1999','2000'],
+                oContainer : $('.my-module')
+            }
+        }
+        $.Table.prototype.init = function(opt){
+            this.defult = $.extend({},this.defult,opt);
+            this.defult1 = this.defult;
+            this.creatPrompt();
+            this.creatTable();
+            this.creatPrev();
+            this.handle();
+        };
+        $.Table.prototype.creatTable = function(){//创建表格
+            this.moduleBody = $("<div class='module-body'></div>");
+            var str = '<p>字段设置</p>\
+                       <p class="data-time">\
+                       <label>数据源：</label>\
+                       <select name="data-origin" id="dataSouce">\
+                       <option selected="selected">请选择</option>';
+            for(var a in this.defult.dataSource){
+                str += '<option>'+this.defult.dataSource[a]+'</option>';
+            }
+            str += '</select>\
+                    </p>\
+                    <div class="choose-option">\
+                    <label>条件：</label>\
+                    <table class="my-table">\
+                    <tr>\
+                    <th>左括号</th>\
+                    <th>逻辑</th>\
+                    <th>字段</th>\
+                    <th>比较符</th>\
+                    <th>值</th>\
+                    <th>右括号</th>\
+                    </tr></table>\
+                    <div class="btn-group">\
+                    <button class="add-btn"></button>\
+                    <button class="remove-btn"></button>\
+                    </div>';
+            this.moduleBody.append(str);
+            this.defult.oContainer.append(this.moduleBody);
+        };
+        $.Table.prototype.creatPrompt = function(){//创建弹窗
+            this.prompt = $('<div id="prompt"></div>');
+            var str = '<div class="mask"></div>\
+                        <div class="content">\
+                        <div class="title">设置查询条件</div>\
+                        <div class="content-body">\
+                        <div>\
+                        <span>字段选择：</span>\
+                        <select class="prompt-zd">\
+                        <option selected="selected">请选择</option>';
+            for(var a in this.defult.ziduan){
+                str += '<option>'+this.defult.ziduan[a]+'</option>';
+            }
+            str +='</select>\
+                    </div>\
+                    <div>\
+                    <span>字段内容：</span>\
+                    <input class="prompt-zhi" type="text"/>\
+                    </div>\
+                    </div>\
+                    <div class="btn-group">\
+                    <button class="cancel">cancel</button>\
+                    <button class="ok">ok</button>\
+                    </div>\
+                    </div>';
+            this.prompt.append(str);
+            $('body').append(this.prompt);
+        };
+
+        $.Table.prototype.creatTr = function createTr(ziduan,zhi,count){
+            var _this = this;
+            $.Table.prototype.selectLeft = function(count,obj){
+                _this.symbolObj = {};
+                console.log(_this.defult);
+                $.each(_this.defult.leftParentheses,function(index,item){
+                    if($(obj).val() == item){
+                        _this.symbolObj['symbCount'+count] = index;
+                    }
+                })
+            }
+            $.Table.prototype.selectRight = function(count,obj){
+                if($(obj).val() != _this.defult.rightParentheses[_this.symbolObj['symbCount'+count]]){
+                    $(obj).val('');
+                    alert("请选择对应符号");
+                }
+            }
+            var str1 = '<tr class="tr">\
+                        <td>\
+                        <select name="data-origin" class="leftParentheses" onchange="$.Table.prototype.selectLeft('+count+',this)">\
+                        <option selected="selected">请选择</option>';
+            for(var a in this.defult.leftParentheses){
+                str1 += '<option>'+this.defult.leftParentheses[a]+'</option>';
+            }
+            str1 += '</select>\
+                    </td>\
+                    <td>\
+                    <select name="data-origin" class="logic">\
+                    <option selected="selected">请选择</option>';
+            for(var a in this.defult.logic){
+                str1 += '<option>'+this.defult.logic[a]+'</option>';
+            }
+            str1 += '<td class="ziduan">'+ziduan+'</td><td>\
+                    <select name="data-origin" class="compareSymble">\
+                    <option selected="selected">请选择</option>';
+            for(var a in this.defult.compareSymble){
+                str1 += '<option>'+this.defult.compareSymble[a]+'</option>';
+            }
+            str1 += '</select>\
+                    </td>\
+                    <td class="zhi">'+zhi+'</td><td>\
+                    <select name="data-origin" class="rightParentheses" onchange="$.Table.prototype.selectRight('+count+',this)">\
+                    <option selected="selected">请选择</option>';
+            for(var a in this.defult.rightParentheses){
+                str1 += '<option>'+this.defult.rightParentheses[a]+'</option>';
+            }
+            str1 += '</select>\
+                    </td>';
+            _this.moduleBody.find('.my-table').append(str1);
+        };
+
+        $.Table.prototype.creatPrev = function(){
+            this.preview = $('<div class="sql-preview"></div>');
+            var str = '<label>sql预览：</label>\
+                        <textarea name="" id="my-sql" cols="30" rows="10">\
+                        </textarea>\
+                        <div class="btn-group">\
+                        <button>预览</button>\
+                        </div>\
+                        </div>';
+            this.preview.append(str);
+            this.moduleBody.append(this.preview);
+        }
+        $.Table.prototype.handle = function(){//事件操作
+            var _this = this;
+            var removeBtn = this.moduleBody.find('.remove-btn');
+            var addBtn = this.moduleBody.find('.add-btn');
+            var tr = null;
+            var prev = this.moduleBody.find('.sql-preview button');
+            var turn = true;
+            var count = 0;
+
+            $(addBtn).on('click',function(e){//添加一条记录
+                $(_this.prompt).show();
+                var okBtn = _this.prompt.find('.ok');
+                var cancelBtn = _this.prompt.find('.cancel');
+                var ziduan = _this.prompt.find('.prompt-zd');
+                var zhi = _this.prompt.find('.prompt-zhi');
+                count ++;
+                if(turn == true){
+                    turn = false;
+                    cancelBtn.unbind().bind('click',function(){
+                        $(_this.prompt).hide();
+                        turn = true;
+                    })
+                    okBtn.unbind().bind('click',function(){
+                        _this.creatTr(ziduan.val(),zhi.val(),count);
+                        tr = _this.moduleBody.find('.tr');
+                        $(_this.prompt).hide();
+                        $(tr).bind('click',function(){
+                            var $this = $(this);
+                            $(tr).removeClass('active').data('active',false);
+                            $(this).addClass('active').data('active',true);
+                            $(prev).click(function(){
+                                var textArea = _this.moduleBody.find('#my-sql');
+                                var dataSouce = _this.moduleBody.find('#dataSouce').val();
+                                var zhi = $this.find('.zhi').html();
+                                var ziduan = $this.find('.ziduan').html();
+                                var logic = $this.find('.logic').val();
+                                var compareSymble = $this.find('.compareSymble').val();
+                                var rightParentheses = $this.find('.rightParentheses').val();
+                                var leftParentheses = _this.moduleBody.find('.leftParentheses').val();
+                                var str = 'SELECT '+ziduan+' FROM '+dataSouce+' WHERE '+leftParentheses+' '+ziduan
+                                        +' '+compareSymble+' '+zhi+' '+rightParentheses;
+                                textArea.val(str);
+                            });
+                        });
+                        turn = true;
+                    })
+                }
+            });
+
+            $(removeBtn).on('click',function(){//删除某一条记录
+                $.each($(tr),function(index,item){
+                    if($(item).data('active') == true){
+                        $(item).remove();
+                    }
+                })
+            });
+        }
+    })(jQuery);
+
+    $(function(){
+        var a1 = new $.Table();
+        a1.init({
+            dataSource:['1998','1999','2000'],   //数据源
+            leftParentheses:['(','{','(('],    //左括号       此值需和右括号一一对应
+            rightParentheses:[')','}','))'],    //右括号      此值需和左括号一一对应
+            logic:['and','or'],   //逻辑符号
+            compareSymble:['=','>=','>','<','<='],    //比较符
+            ziduan:['1998','1999','2000'],
+            oContainer : $('.my-module')
+        });
+    });
+</script>
+</html>
