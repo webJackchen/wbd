@@ -4,12 +4,12 @@
 ##调用方法
 
 var a1 = new $.Table();</br>
-        a1.init({</br>
-            dataSource:['1998','1999','2000'],   //数据源</br>
-            leftParentheses:['(','{','(('],    //左括号       此值需和右括号一一对应</br>
-            rightParentheses:[')','}','))'],    //右括号      此值需和左括号一一对应</br>
-            logic:['and','or'],   //逻辑符号</br>
-            compareSymble:['=','>=','>','<','<='],    //比较符</br>
-            ziduan:['1998','1999','2000'],</br>
-            oContainer : $('.my-module')</br>
-        });</br>
+&nbsp;&nbsp;a1.init({</br>
+&nbsp;&nbsp;&nbsp;&nbsp;dataSource:['1998','1999','2000'],   //数据源</br>
+&nbsp;&nbsp;&nbsp;&nbsp;leftParentheses:['(','{','(('],    //左括号       此值需和右括号一一对应</br>
+&nbsp;&nbsp;&nbsp;&nbsp;rightParentheses:[')','}','))'],    //右括号      此值需和左括号一一对应</br>
+&nbsp;&nbsp;&nbsp;&nbsp;logic:['and','or'],   //逻辑符号</br>
+&nbsp;&nbsp;&nbsp;&nbsp;compareSymble:['=','>=','>','<','<='],    //比较符</br>
+&nbsp;&nbsp;&nbsp;&nbsp;ziduan:['1998','1999','2000'],</br>
+&nbsp;&nbsp;&nbsp;&nbsp;oContainer : $('.my-module')</br>
+&nbsp;&nbsp;});</br>
